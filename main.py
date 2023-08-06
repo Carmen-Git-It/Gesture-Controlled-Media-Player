@@ -1,5 +1,8 @@
-import pygame
+if __name__ == '__main__':
+    import pygame
+    from gesture_detection import start
 import os
+from multiprocessing import Process, Queue
 
 class MusicPlayer:
     def __init__(self, media_directory):
@@ -43,6 +46,20 @@ class MusicPlayer:
         self.initial_volume = pygame.mixer.music.get_volume()
         self.current_state_icon = self.play_icon
 
+    def gesture_detection(self):
+        if not receive_queue.empty():
+            msg = str(receive_queue.get())
+            if msg == 'ok':
+                self.play()
+            elif msg == 'stop':
+                if pygame.mixer.music.get_busy():
+                    self.pause()
+            elif msg == 'fist':
+                self.quit()
+            elif msg == 'like':
+                self.increase_volume()
+            elif msg == 'dislike':
+                self.decrease_volume()
 
     def load_media(self):
         media_path = os.path.join(self.media_directory, self.media_files[self.current_media_index])
@@ -112,8 +129,6 @@ class MusicPlayer:
             volume_down_icon_rect = self.volume_down_icon.get_rect(center=(self.window_width // 2 - 150, self.window_height - 50))
             self.window.blit(self.volume_down_icon, volume_down_icon_rect)
 
-            
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -145,15 +160,27 @@ class MusicPlayer:
                     elif volume_down_icon_rect.collidepoint(mouse_pos):
                       self.decrease_volume()
 
+            self.gesture_detection()
+
             # Update the display
             pygame.display.flip()
 
         self.quit()
 
     def quit(self):
+        send_queue.put('Closing')
         pygame.quit()
 
-media_directory = "./music"
-player = MusicPlayer(media_directory)
 
-player.run()
+if __name__ == '__main__':
+    # Create queue pipe and subprocess for gesture detection
+    send_queue = Queue()
+    receive_queue = Queue()
+    gesture_detector = Process(target=start, args=(receive_queue, send_queue))
+    gesture_detector.daemon = True
+    gesture_detector.start()
+    media_directory = "./music"
+    player = MusicPlayer(media_directory)
+    player.run()
+
+
