@@ -77,6 +77,12 @@ class MusicPlayer:
 
     def play(self):
         pygame.mixer.music.play()
+        self.current_state_icon = self.pause_icon
+        current_state_icon_rect = self.current_state_icon.get_rect(center=(self.window_width // 2 - 100, self.window_height - 50))
+        self.window.blit(self.current_state_icon, current_state_icon_rect)
+        
+        # Update the display
+        pygame.display.flip()
 
     def pause(self):
         if pygame.mixer.music.get_busy():
@@ -85,6 +91,12 @@ class MusicPlayer:
         else:
             pygame.mixer.music.unpause()
             self.current_state_icon = self.pause_icon
+
+        current_state_icon_rect = self.current_state_icon.get_rect(center=(self.window_width // 2 - 100, self.window_height - 50))
+        self.window.blit(self.current_state_icon, current_state_icon_rect)
+
+        # Update the display
+        pygame.display.flip()
 
     def next_song(self):
         self.current_media_index = (self.current_media_index + 1) % len(self.media_files)
@@ -190,7 +202,6 @@ class MusicPlayer:
                     mouse_pos = pygame.mouse.get_pos()
                     if current_state_icon_rect.collidepoint(mouse_pos):
                         self.pause()
-                        current_state_icon_rect = self.current_state_icon.get_rect(center=(self.window_width // 2 - 100, self.window_height - 50))
                     elif next_icon_rect.collidepoint(mouse_pos):
                         self.next_song()
                     elif prev_icon_rect.collidepoint(mouse_pos):
