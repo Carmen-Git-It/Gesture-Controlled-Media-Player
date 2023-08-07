@@ -2,6 +2,8 @@ if __name__ == '__main__':
     import pygame
     from gesture_detection import start
 import os
+import tkinter
+import tkinter.filedialog
 from multiprocessing import Process, Queue
 
 class MusicPlayer:
@@ -39,6 +41,9 @@ class MusicPlayer:
         
         self.volume_down_icon = pygame.image.load("./images/icons/volume-down.png")
         self.volume_down_icon = pygame.transform.scale(self.volume_down_icon, (50, 50))
+
+        self.browse_icon = pygame.image.load("./images/icons/browse.png")
+        self.browse_icon = pygame.transform.scale(self.browse_icon, (50, 50))
 
         # Load the first media file
         self.load_media()
@@ -94,6 +99,28 @@ class MusicPlayer:
         volume = max(pygame.mixer.music.get_volume() - self.volume_increment, 0.0)
         pygame.mixer.music.set_volume(volume)
 
+    def browse_files(self):
+        top = tkinter.Tk()
+        top.withdraw()
+        dir_name = tkinter.filedialog.askopenfilename(title="Select a file in the folder you would like to load",
+                                                      initialdir='./',
+                                                      filetypes=(('mp3 files', '*.mp3'),))
+        dir_name = os.path.dirname(dir_name)
+        if os.path.isdir(dir_name):
+            # Filter out any files that are not mp3s
+            self.media_files = [f for f in os.listdir(dir_name) if os.path.isfile(os.path.join(dir_name, f))
+                                and f.endswith('.mp3')]
+            if len(self.media_files) > 0:
+                self.media_directory = dir_name
+                self.current_media_index = 0
+                self.load_media()
+                self.play()
+            else:
+                self.media_files = [f for f in os.listdir(self.media_directory) if
+                                    os.path.isfile(os.path.join(self.media_directory, f))
+                                    and f.endswith('.mp3')]
+        top.destroy()
+
     def run(self):
         running = True
         self.play()
@@ -129,6 +156,9 @@ class MusicPlayer:
             volume_down_icon_rect = self.volume_down_icon.get_rect(center=(self.window_width // 2 - 150, self.window_height - 50))
             self.window.blit(self.volume_down_icon, volume_down_icon_rect)
 
+            browse_icon_rect = self.browse_icon.get_rect(center=(50, self.window_height - 575))
+            self.window.blit(self.browse_icon, browse_icon_rect)
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -159,6 +189,8 @@ class MusicPlayer:
                       self.increase_volume()
                     elif volume_down_icon_rect.collidepoint(mouse_pos):
                       self.decrease_volume()
+                    elif browse_icon_rect.collidepoint(mouse_pos):
+                        self.browse_files()
 
             self.gesture_detection()
 
@@ -171,7 +203,7 @@ class MusicPlayer:
         send_queue.put('Closing')
         pygame.quit()
 
-
+# Guard for multiprocessing
 if __name__ == '__main__':
     # Create queue pipe and subprocess for gesture detection
     send_queue = Queue()
