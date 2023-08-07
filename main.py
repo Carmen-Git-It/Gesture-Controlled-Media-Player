@@ -45,6 +45,11 @@ class MusicPlayer:
         self.browse_icon = pygame.image.load("./images/icons/browse.png")
         self.browse_icon = pygame.transform.scale(self.browse_icon, (50, 50))
 
+        self.replay_icon = pygame.image.load("./images/icons/replay.png")
+        self.replay_icon = pygame.transform.scale(self.replay_icon, (45, 45))
+
+
+
         # Load the first media file
         self.load_media()
 
@@ -99,6 +104,10 @@ class MusicPlayer:
         volume = max(pygame.mixer.music.get_volume() - self.volume_increment, 0.0)
         pygame.mixer.music.set_volume(volume)
 
+    def replay_song(self):
+        pygame.mixer.music.rewind()
+        pygame.mixer.music.play()
+
     def browse_files(self):
         top = tkinter.Tk()
         top.withdraw()
@@ -143,10 +152,13 @@ class MusicPlayer:
             current_state_icon_rect = self.current_state_icon.get_rect(center=(self.window_width // 2, self.window_height - 50))
             self.window.blit(self.current_state_icon, current_state_icon_rect)
 
-            next_icon_rect = self.next_icon.get_rect(center=(self.window_width // 2 + 150, self.window_height - 50))
+            replay_icon_rect = self.replay_icon.get_rect(center=(self.window_width // 2 + 75, self.window_height - 50))
+            self.window.blit(self.replay_icon, replay_icon_rect)
+
+            next_icon_rect = self.next_icon.get_rect(center=(self.window_width // 2 + 225, self.window_height - 50))
             self.window.blit(self.next_icon, next_icon_rect)
 
-            prev_icon_rect = self.prev_icon.get_rect(center=(self.window_width // 2 + 75, self.window_height - 50))
+            prev_icon_rect = self.prev_icon.get_rect(center=(self.window_width // 2 + 150, self.window_height - 50))
             self.window.blit(self.prev_icon, prev_icon_rect)
 
             # Display the volume control buttons
@@ -191,6 +203,8 @@ class MusicPlayer:
                       self.decrease_volume()
                     elif browse_icon_rect.collidepoint(mouse_pos):
                         self.browse_files()
+                    elif replay_icon_rect.collidepoint(mouse_pos):
+                      self.replay_song()
 
             self.gesture_detection()
 
