@@ -7,7 +7,6 @@ import tkinter.filedialog
 from multiprocessing import Process, Queue
 
 
-
 class MusicPlayer:
     def __init__(self, media_directory):
         self.media_directory = media_directory
@@ -29,14 +28,11 @@ class MusicPlayer:
         self.pause_icon = pygame.image.load("./images/icons/pause-48.png")
         self.pause_icon = pygame.transform.scale(self.pause_icon, (46, 46))
 
-
         self.next_icon = pygame.image.load("./images/icons/media-step-forward-48.png")
         self.next_icon = pygame.transform.scale(self.next_icon, (46, 46))
 
-
         self.prev_icon = pygame.image.load("./images/icons/media-step-backward-48.png")
         self.prev_icon = pygame.transform.scale(self.prev_icon, (46, 46))
-
 
         self.play_icon = pygame.image.load("./images/icons/play-48.png")
         self.play_icon = pygame.transform.scale(self.play_icon, (46, 46))
@@ -44,19 +40,14 @@ class MusicPlayer:
         self.volume_up_icon = pygame.image.load("./images/icons/audio-add-48.png")
         self.volume_up_icon = pygame.transform.scale(self.volume_up_icon, (52, 52))
 
-
         self.volume_down_icon = pygame.image.load("./images/icons/audio-remove-48.png")
         self.volume_down_icon = pygame.transform.scale(self.volume_down_icon, (52, 52))
-
 
         self.browse_icon = pygame.image.load("./images/icons/folder-7-48.png")
         self.browse_icon = pygame.transform.scale(self.browse_icon, (46, 46))
 
-
         self.replay_icon = pygame.image.load("./images/icons/undo-2-48.png").convert_alpha()
         self.replay_icon = pygame.transform.scale(self.replay_icon, (46, 46))
-
-
 
         # Load the first media file
         self.load_media()
@@ -124,7 +115,8 @@ class MusicPlayer:
         volume = max(pygame.mixer.music.get_volume() - self.volume_increment, 0.0)
         pygame.mixer.music.set_volume(volume)
 
-    def replay_song(self):
+    @staticmethod
+    def replay_song():
         pygame.mixer.music.rewind()
         pygame.mixer.music.play()
 
@@ -217,13 +209,13 @@ class MusicPlayer:
                     elif volume_text_rect.collidepoint(mouse_pos):
                         self.increase_volume()
                     elif volume_up_icon_rect.collidepoint(mouse_pos):
-                      self.increase_volume()
+                        self.increase_volume()
                     elif volume_down_icon_rect.collidepoint(mouse_pos):
-                      self.decrease_volume()
+                        self.decrease_volume()
                     elif browse_icon_rect.collidepoint(mouse_pos):
                         self.browse_files()
                     elif replay_icon_rect.collidepoint(mouse_pos):
-                      self.replay_song()
+                        self.replay_song()
 
             self.gesture_detection()
 
@@ -232,9 +224,11 @@ class MusicPlayer:
 
         self.quit()
 
-    def quit(self):
+    @staticmethod
+    def quit():
         send_queue.put('Closing')
         pygame.quit()
+
 
 # Guard for multiprocessing
 if __name__ == '__main__':
@@ -244,8 +238,8 @@ if __name__ == '__main__':
     gesture_detector = Process(target=start, args=(receive_queue, send_queue))
     gesture_detector.daemon = True
     gesture_detector.start()
-    media_directory = "./music"
-    player = MusicPlayer(media_directory)
+    m_media_directory = "./music"
+    player = MusicPlayer(m_media_directory)
     player.run()
 
 

@@ -34,7 +34,7 @@ python main.py
 - Thumbs down to lower the volume ![Image of a thumbs down indicating volume down](https://github.com/Carmen-Git-It/Gesture-Controlled-Media-Player/blob/main/images/readme-images/volume_down.png)
 - Raise a flat hand, palm facing the camera to pause ![Image of a flat palm indicating pause](https://github.com/Carmen-Git-It/Gesture-Controlled-Media-Player/blob/main/images/readme-images/pause.png)
 - Make an OK sign with your hand, first finger and thumb touching to play ![Image of an OK gesture indicating play](https://github.com/Carmen-Git-It/Gesture-Controlled-Media-Player/blob/main/images/readme-images/play.png)
-- Make a fist with the knuckles facing the camera to close the program. ![Image of a fist indicating to exit the program](https://github.com/Carmen-Git-It/Gesture-Controlled-Media-Player/blob/main/images/readme-images/exit.png)
+- Make a fist with the knuckles facing the camera to replay the current song. ![Image of a fist indicating to exit the program](https://github.com/Carmen-Git-It/Gesture-Controlled-Media-Player/blob/main/images/readme-images/exit.png)
 
 ## Contributing
 
